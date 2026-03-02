@@ -7,13 +7,17 @@ import { BASE_URL } from "../utils/constants";
 // import NavBar from "./NavBar";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("sachin@gmail.com");
-  const [password, setPassword] = useState("Sachin@12345");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    if (!emailId || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
     try {
       const res = await axios.post(
         BASE_URL + "/login",
@@ -21,7 +25,7 @@ const Login = () => {
         { withCredentials: true }
       );
       dispatch(addUser(res.data.user));
-      return navigate("/feed");
+      navigate("/feed");
     } catch (error) {
       setError(error?.response?.data || "Something went wrong !!");
     }

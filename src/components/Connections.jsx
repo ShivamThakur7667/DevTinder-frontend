@@ -5,9 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addConnectons } from "../utils/connectionSlice";
 
 const Connections = () => {
-  const connectionsFromStore = useSelector((store) => store.connections);
+  const connections = useSelector((store) => store.connections);
   const dispatch = useDispatch();
-  const [connections, setConnections] = useState([]);
 
   const fetchConnections = async () => {
     try {
@@ -15,21 +14,8 @@ const Connections = () => {
         withCredentials: true,
       });
       dispatch(addConnectons(res.data.data));
-      setConnections(res.data.data);
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // Handle Delete Connection
-  const handleDelete = async (_id) => {
-    try {
-      await axios.delete(BASE_URL + "/user/" + _id, {
-        withCredentials: true,
-      });
-      setConnections((prev) => prev.filter((user) => user._id !== _id));
-    } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -37,13 +23,8 @@ const Connections = () => {
     fetchConnections();
   }, []);
 
-  useEffect(() => {
-    setConnections(connectionsFromStore);
-  }, [connectionsFromStore]);
+  if (!connections) return null;
 
-  if (!connections) {
-    return;
-  }
   if (connections.length === 0) {
     return <h1>No Connections Found</h1>;
   }

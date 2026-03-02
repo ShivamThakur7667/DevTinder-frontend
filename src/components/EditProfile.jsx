@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import UserCard from "./UserCard";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
@@ -6,48 +6,30 @@ import { addUser } from "../utils/userSlice";
 import axios from "axios";
 
 const EditProfile = ({ user }) => {
-  const [firstName, setFirstName] = useState(user?.firstName || "");
-  const [lastName, setLastName] = useState(user?.lastName || "");
-  const [imageURL, setImageURL] = useState(user?.imageURL || "");
-  const [age, setAge] = useState(user?.age || "");
-  const [gender, setGender] = useState(user?.gender || "");
-  const [about, setAbout] = useState(user?.about || "");
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [imageURL, setimageURL] = useState(user.imageURL);
+  const [age, setAge] = useState(user.age);
+  const [gender, setGender] = useState(user.gender);
+  const [about, setAbout] = useState(user.about);
   const dispatch = useDispatch();
-  const [showToast, setshowToast] = useState(false);
-
+  const [showToast, setShowToast] = useState(false);
   const [error, setError] = useState("");
-
-  const [cardHeight, setCardHeight] = useState("auto");
-  const formRef = useRef(null);
-
-  useEffect(() => {
-    if (formRef.current) {
-      const formHeight = formRef.current.offsetHeight;
-      setCardHeight(formHeight / 2 + "px");
-    }
-  }, [firstName, lastName, imageURL, age, gender, about]);
 
   const saveProfile = async () => {
     try {
       const res = await axios.patch(
-        `${BASE_URL}/profile/edit`,
+        BASE_URL + "/profile/edit",
+        { firstName, lastName, imageURL, age, gender, about },
         {
-          firstName,
-          lastName,
-          imageURL,
-          age,
-          gender,
-          about,
-        },
-        { withCredentials: true }
+          withCredentials: true,
+        }
       );
       dispatch(addUser(res?.data?.data));
-      setshowToast(true);
-      setTimeout(() => {
-        setshowToast(false);
-      }, 3000);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     } catch (error) {
-      setError(error.message);
+      setError(error.response.data);
     }
   };
 
@@ -88,7 +70,7 @@ const EditProfile = ({ user }) => {
                     value={imageURL}
                     className="input"
                     placeholder="Enter your imageURL here"
-                    onChange={(e) => setImageURL(e.target.value)}
+                    onChange={(e) => setimageURL(e.target.value)}
                   />
                 </fieldset>
 
@@ -143,9 +125,8 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
 
-        <div style={{ height: cardHeight }}>
+        <div>
           <UserCard
-            className="flex-1 flex justify-center items-center"
             user={{ firstName, lastName, imageURL, age, gender, about }}
           />
         </div>

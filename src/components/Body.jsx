@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";       //Navigate
+import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { BASE_URL } from "../utils/constants";
@@ -20,7 +20,7 @@ const Body = () => {
       });
       dispatch(addUser(res.data.user));
     } catch (error) {
-      if (error.status === 401) {
+      if (error.response?.status === 401) {
         navigate("/login");
       }
     }
@@ -29,6 +29,7 @@ const Body = () => {
   useEffect(() => {
     fetchUser();
   }, []);
+
   return (
     <div>
       <NavBar />

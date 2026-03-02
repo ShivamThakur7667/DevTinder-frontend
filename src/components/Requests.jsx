@@ -17,8 +17,8 @@ const Requests = () => {
           withCredentials: true,
         }
       );
+      console.log(`${BASE_URL}/request/review/${status}/${reqId}`);
       dispatch(removeRequest(reqId));
-      // fetchRequests();
     } catch (error) {
       console.log(error.message);
     }
@@ -29,7 +29,7 @@ const Requests = () => {
         withCredentials: true,
       });
 
-      // filter out request with missing user data
+      // filter out request with missing user Data
       const validRequests = res.data.data.filter((r) => r.User);
 
       dispatch(addRequests(validRequests));
@@ -80,8 +80,8 @@ const Requests = () => {
               <button
                 className="btn btn-active btn-primary my-2 mr-2"
                 onClick={() => {
-                  console.log("Sending reqId:", request.data.reqId);
-                  reviewRequest("rejected", request.data.reqId);
+                  console.log("Sending reqId:", request.reqId);
+                  reviewRequest("rejected", request.reqId);
                 }}
               >
                 Reject

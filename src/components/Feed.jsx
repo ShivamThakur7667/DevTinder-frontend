@@ -6,11 +6,11 @@ import { useEffect } from "react";
 import UserCard from "./UserCard";
 
 const Feed = () => {
-  const feed = useSelector((store) => store.user);
+  const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
 
   const getFeed = async () => {
-    if (feed) return;
+    if (feed && feed.length > 0) return;
     try {
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
@@ -25,13 +25,16 @@ const Feed = () => {
     getFeed();
   }, []);
 
+  if (!feed) return null;
+
+  if (feed.length <= 0)
+    return <h1 className="flex justify-center my-10">No new users found!</h1>;
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)]">
-      {feed && (
-        <div className="my-10 flex justify-center">
-          <UserCard user1={feed} />
-        </div>
-      )}
+      <div className="my-10 flex justify-center">
+        <UserCard user={feed[0]} />
+      </div>
     </div>
   );
 };
